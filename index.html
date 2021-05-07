@@ -1,18 +1,101 @@
-<!doctype html>
+--snip--
+        </head>
+    
+    <body>
+    
+        <!-- Static navbar -->
 
-<html lang="en">
-<head>
-  <meta charset="utf-8">
 
-  <title>The HTML5 Herald</title>
-  <meta name="description" content="The HTML5 Herald">
-  <meta name="author" content="SitePoint">
+ <nav class="navbar navbar-default navbar-static-top">
+   <div class="container">
+     
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed"
+        data-toggle="collapse" data-target="#navbar"
+        aria-expanded="false" aria-controls="navbar">
+      </button>
+      <a class="navbar-brand" href="{% url 'learning_logs:index' %}">
+        Learning Log</a>
+   </div>
 
-  <link rel="stylesheet" href="css/styles.css?v=1.0">
+   <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="{% url 'learning_logs:topics' %}">Topics</a></li>
+      </ul>
+      
+      <ul class="nav navbar-nav navbar-right">
+        {% if user.is_authenticated %}
+          <li><a>Hello, {{ user.username }}.</a></li>
+          <li><a href="{% url 'users:logout' %}">log out</a></li>
+        {% else %}
+          <li><a href="{% url 'users:register' %}">register</a></li>
+          <li><a href="{% url 'users:login' %}">log in</a></li>
+        {% endif %}
+      </ul>
+    </div><!--/.nav-collapse -->
 
-</head>
+  </div>
+ </nav>
+{% extends "learning_logs/base.html" %}
 
-<body>
-  <p>whos joe?</p>
-</body>
-</html>
+{% block header %}
+  <div class='jumbotron'>
+    <h1>Track your learning.</h1>
+  </div>
+{% endblock header %}
+
+{% block content %}
+  <h2>
+    <a href="{% url 'users:register' %}">Register an account</a> to make
+    your own Learning Log, and list the topics you're learning about.
+  </h2>
+ <h2>
+   Whenever you learn something new about a topic, make an entry
+   summarizing what you've learned.
+ </h2>
+{% endblock content %}
+
+{% extends "learning_logs/base.html" %}
+{% load bootstrap3 %}
+
+{% block header %}
+  <h2>Log in to your account.</h2>
+{% endblock header %}
+
+{% block content %}
+
+  <form method="post" action="{% url 'users:login' %}" class="form">
+     {% csrf_token %}
+ {% bootstrap_form form %}
+ 
+ {% buttons %}
+   <button name="submit" class="btn btn-primary">log in</button>
+ {% endbuttons %}
+
+  <input type="hidden" name="next" value="{% url 'learning_logs:index' %}" />
+</form>
+
+{% endblock content %}
+
+{% extends "learning_logs/base.html" %}
+{% load bootstrap3 %}
+
+{% block header %}
+  <h2>Add a new topic:</h2>
+{% endblock header %}
+
+{% block content %}
+
+  <form action="{% url 'learning_logs:new_topic' %}" method='post'
+      class="form">
+
+   {% csrf_token %}
+   {% bootstrap_form form %}
+ 
+   {% buttons %}
+     <button name="submit" class="btn btn-primary">add topic</button>
+   {% endbuttons %}
+
+</form>
+
+{% endblock content %}
